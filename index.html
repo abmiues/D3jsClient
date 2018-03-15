@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh">  
+<head>
+	<meta charset="utf-8">  
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<meta name="description" content="">
+	<link rel="stylesheet" href="./leaflet.css" />
+<style>
+
+</style>
+</head> 
+<body style="background:#000;margin:0px;padding:0px;">
+<div id="mapid" style="width:1000px;height:480px;"></div>
+<script src="./d3/4.x/d3.min.js"></script>
+<script src="./topojson.js"></script>
+<script src="./leaflet.js"></script>
+<script src="./line.js"></script>
+<script>
+var width  = document.documentElement.clientWidth;
+var height = document.documentElement.clientHeight;
+var styles=document.getElementById("mapid").style;
+styles.height = height + "px"; 
+styles.width = width + "px"; 
+
+var mymap = L.map('mapid',{zoom:3,minZoom:2,maxZoom:4}).setView([0, 33], 3);
+southWest = L.latLng( - 700, -200),
+northEast = L.latLng(700, 200);
+bounds = L.latLngBounds(southWest, northEast),
+mymap.setMaxBounds(bounds),
+
+d3.json("./world.geojson",function(error, root){
+
+	//var georoot = topojson.feature(root, root.objects);
+
+	L.geoJSON(root.features, {
+		style: {
+			color:"purple",	//线颜色
+			weight: 2,		//线宽
+			fillColor: "yellow"	//填充颜色
+		}
+	}).addTo(mymap);
+	
+	var svg = d3.select("#mapid").select("svg");
+	//
+	//f = (svg.append("g"), []);
+	lineArry=(svg.append("g"),[]);
+	lineArry.push(new Line(mymap,svg.append("g")));
+	lineArry[lineArry.length-1].init([51.6, 0],[0, 0]);
+	//f[f.length-1].delete();
+	
+	
+	
+	setInterval(function() {
+		for(var i=lineArry.length-1;i>=0;i--)
+		{
+			if(lineArry[i].isAlive())//ui是否存活
+				lineArry[i].update();//更新ui
+			else
+				lineArry.splice(i,1);//否则从ui数组中删除
+		}
+	},25);
+	mymap.on("zoomend",(function(){
+		for(var i=lineArry.length-1;i>=0;i--)
+		{
+			lineArry[i].ZoomUp();//缩放更新ui
+		}
+		
+	}))
+
+});
+
+
+
+
+
+
+</script>
+</body>
+</html>
