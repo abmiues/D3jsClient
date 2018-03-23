@@ -45,13 +45,18 @@ d3.json("./world.geojson",function(error, root){
 	//
 	//f = (svg.append("g"), []);
 	lineArry=(svg.append("g"),[]);
-	lineArry.push(new Line(mymap,svg.append("g")));
-	lineArry[lineArry.length-1].init([51.6, 0],[0, 0]);
+	/*for(var i=1;i<=1000;i++)
+	{
+		lineArry.push(new Line(mymap,svg.append("g")));
+		lineArry[lineArry.length-1].init([0, 0],[Math.cos(Math.PI*i*1.0/500)*60, Math.sin(Math.PI*i*1.0/500)*60]);
+	}*/
+	
 	//f[f.length-1].delete();
 		//添加defs标签
 		
 		
-	
+	lineArry.push(new Line(mymap,svg.append("g")));
+		lineArry[lineArry.length-1].init([0, 0],[33,120]);
 	
 	setInterval(function() {
 		for(var i=lineArry.length-1;i>=0;i--)
@@ -61,7 +66,7 @@ d3.json("./world.geojson",function(error, root){
 			else
 				lineArry.splice(i,1);//否则从ui数组中删除
 		}
-	},25);
+	},33);
 	mymap.on("zoomend",(function(){
 		for(var i=lineArry.length-1;i>=0;i--)
 		{
@@ -71,11 +76,6 @@ d3.json("./world.geojson",function(error, root){
 	}))
 
 });
-
-
-
-
-
 
 </script>
 </body>
